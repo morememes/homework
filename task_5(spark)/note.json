@@ -1,0 +1,296 @@
+{
+  "paragraphs": [
+    {
+      "text": "import org.apache.spark.sql.types._\nimport org.apache.spark.sql.Row",
+      "user": "anonymous",
+      "dateUpdated": "2019-05-25 20:06:57.044",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "import org.apache.spark.sql.types._\nimport org.apache.spark.sql.Row\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1558787931333_-687411382",
+      "id": "20190525-153851_1247167407",
+      "dateCreated": "2019-05-25 15:38:51.333",
+      "dateStarted": "2019-05-25 20:06:57.166",
+      "dateFinished": "2019-05-25 20:07:10.103",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "// Загружаем текста песен Фейса и Киркорова\nval face_text \u003d sc.textFile(\"/home/morememes/Downloads/texts/face.txt\")\nval kirkorov_text \u003d sc.textFile(\"/home/morememes/Downloads/texts/kirkorov.txt\")\n// составляем словарь слов фейса и в следующей строке считаем кол-во вхождений слов из словаря Фейса в текста Киркорова\nval face_dict \u003d face_text.flatMap(line\u003d\u003eline.toLowerCase().split(\" \").filter(_.length\u003e2)).collect()\nval words_freq \u003d kirkorov_text.flatMap(line\u003d\u003eline.toLowerCase().split(\" \").filter(_.length\u003e2).filter(word\u003d\u003e(face_dict.contains(word)))).map(word\u003d\u003e(word,1)).reduceByKey(_+_).cache()",
+      "user": "anonymous",
+      "dateUpdated": "2019-05-25 20:38:36.515",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "face_text: org.apache.spark.rdd.RDD[String] \u003d /home/morememes/Downloads/texts/face.txt MapPartitionsRDD[129] at textFile at \u003cconsole\u003e:34\nkirkorov_text: org.apache.spark.rdd.RDD[String] \u003d /home/morememes/Downloads/texts/kirkorov.txt MapPartitionsRDD[131] at textFile at \u003cconsole\u003e:35\nnotLetter: scala.util.matching.Regex \u003d [^a-zA-Zа-яА-Я]\nface_dict: Array[String] \u003d Array(мире, просходит, пиздец, каждый, день,, тебя, волнует, только, твоя, теплая, постель., нашел, покушать,, сына,, нашел,, где, разогреть?, ценишь, это, пидр,, мире, голодающих, детей, многим, больше, чем, твои, подруги, покупают, членов, толще, такой, же,, как, все, зеленой, рощи, вырос, там,, где, считают., выживал, бабушкину, пенсию, соц.помощь., пока, тебя, кормушке, было, золото, парнями, начинали, убиваться, хмелем,, сол..."
+          }
+        ]
+      },
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "SPARK JOB",
+          "tooltip": "View in Spark web UI",
+          "group": "spark",
+          "values": [
+            "http://morememes-7RE.campus-ws.pu.ru:4040/jobs/job?id\u003d33",
+            "http://morememes-7RE.campus-ws.pu.ru:4040/jobs/job?id\u003d34",
+            "http://morememes-7RE.campus-ws.pu.ru:4040/jobs/job?id\u003d35"
+          ],
+          "interpreterSettingId": "spark"
+        }
+      },
+      "apps": [],
+      "jobName": "paragraph_1558804705521_-125140063",
+      "id": "20190525-201825_2111117395",
+      "dateCreated": "2019-05-25 20:18:25.521",
+      "dateStarted": "2019-05-25 20:34:17.206",
+      "dateFinished": "2019-05-25 20:34:17.784",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "// Переводим данные в пригодный вид для sql\nval fields\u003dList(StructField(\"word\", StringType, true), StructField(\"counts\", IntegerType, true))\nval structure \u003d StructType(fields)\nval rowRDD \u003d words_freq.map(wc\u003d\u003eRow(wc._1, wc._2))\nval wcDF \u003d sqlContext.createDataFrame(rowRDD, structure)\nwcDF.registerTempTable(\"TableW\")",
+      "user": "anonymous",
+      "dateUpdated": "2019-05-25 20:38:58.675",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "warning: there was one deprecation warning; re-run with -deprecation for details\nfields: List[org.apache.spark.sql.types.StructField] \u003d List(StructField(word,StringType,true), StructField(counts,IntegerType,true))\nstructure: org.apache.spark.sql.types.StructType \u003d StructType(StructField(word,StringType,true), StructField(counts,IntegerType,true))\nrowRDD: org.apache.spark.rdd.RDD[org.apache.spark.sql.Row] \u003d MapPartitionsRDD[141] at map at \u003cconsole\u003e:38\nwcDF: org.apache.spark.sql.DataFrame \u003d [word: string, counts: int]\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1558801197390_565288776",
+      "id": "20190525-191957_1121971736",
+      "dateCreated": "2019-05-25 19:19:57.390",
+      "dateStarted": "2019-05-25 20:34:20.505",
+      "dateFinished": "2019-05-25 20:34:20.890",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "// Выводим что получилось\n%sql\nselect * from TableW\norder by counts desc\nlimit 10",
+      "user": "anonymous",
+      "dateUpdated": "2019-05-25 20:39:43.203",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "pieChart",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "word": "string",
+                      "counts": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                },
+                "multiBarChart": {
+                  "rotate": {
+                    "degree": "-45"
+                  },
+                  "xLabelStatus": "default"
+                },
+                "stackedAreaChart": {
+                  "rotate": {
+                    "degree": "-45"
+                  },
+                  "xLabelStatus": "default"
+                },
+                "lineChart": {
+                  "rotate": {
+                    "degree": "-45"
+                  },
+                  "xLabelStatus": "default"
+                }
+              },
+              "commonSetting": {},
+              "keys": [
+                {
+                  "name": "word",
+                  "index": 0.0,
+                  "aggr": "sum"
+                }
+              ],
+              "groups": [],
+              "values": [
+                {
+                  "name": "counts",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              ]
+            },
+            "helium": {}
+          }
+        },
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/scala",
+        "runOnSelectionChange": true
+      },
+      "settings": {
+        "params": {
+          "minFrequency": "1",
+          "minLength": "1"
+        },
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "word\tcounts\nмне\t47\nкак\t25\nтебя\t22\nлюбовь\t17\nвсе\t16\nпросто\t15\nнет\t14\nтебе\t13\nона\t12\nчто\t11\n"
+          },
+          {
+            "type": "TEXT",
+            "data": ""
+          }
+        ]
+      },
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "SPARK JOB",
+          "tooltip": "View in Spark web UI",
+          "group": "spark",
+          "values": [
+            "http://morememes-7RE.campus-ws.pu.ru:4040/jobs/job?id\u003d37"
+          ],
+          "interpreterSettingId": "spark"
+        }
+      },
+      "apps": [],
+      "jobName": "paragraph_1558801215024_-1961333803",
+      "id": "20190525-192015_1445311236",
+      "dateCreated": "2019-05-25 19:20:15.024",
+      "dateStarted": "2019-05-25 20:35:53.294",
+      "dateFinished": "2019-05-25 20:35:53.418",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "",
+      "user": "anonymous",
+      "dateUpdated": "2019-05-25 19:26:49.280",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1558801574381_574773649",
+      "id": "20190525-192614_539863615",
+      "dateCreated": "2019-05-25 19:26:14.381",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "Sparck",
+  "id": "2EDMEFRPJ",
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {
+    "spark:shared_process": []
+  },
+  "config": {
+    "isZeppelinNotebookCronEnable": false
+  },
+  "info": {}
+}
